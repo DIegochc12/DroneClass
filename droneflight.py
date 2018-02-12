@@ -1,9 +1,6 @@
 from dronekit import connect, VehicleMode, LocationGlobalRelative
 import time 
 
-#In this line we set home 
-LocationGlobalRelative(20.736348,-103.457418,10) 
-
 #With this code we arm the drone ir order to prepare it for the take off
 def arm_and_takeoff(TargetAltitude):
 	print('Executing takeoff')
