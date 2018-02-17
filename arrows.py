@@ -1,53 +1,11 @@
-
-#***************************************************************************
-# Title        : Assignment2_template.py
-#
-# Description  : This file is a starting point for assignment 2 it contains
-#                the main parts and pseudo code for you to complete with your 
-#                own code.
-#
-# Environment  : Python 2.7 Code. 
-#
-# License      : GNU GPL version 3
-#
-# Editor Used  : Sublime Text
-#
-#****************************************************************************
-
-#****************************************************************************
-# Imported functions, classes and methods
-#****************************************************************************
+#This lines are the libraries we need to import in order to be able of running the program
 import time
 from dronekit import connect, VehicleMode, LocationGlobalRelative, Command, LocationGlobal
 from pymavlink import mavutil
 import Tkinter as tk
 
-#****************************************************************************
-#   Method Name     : set_velocity_body
-#
-#   Description     : Sends a MAVLINK velocity command in body frame reference
-#                     This means that the X, Y, Z axis will be in relation to the 
-#                     vehicle. 
-#                     Positive X values will move the drone forward
-#                     Positive Y values will move the drone Right
-#                     Positive Z values will move the drone down
-#                     The values for vx, vy and vz are in m/s, so sending a value
-#                     of say 5 in vx will move the drone forward at 5 m/s
-#
-#                     More information can be found here:
-#                     http://ardupilot.org/dev/docs/copter-commands-in-guided-mode.html
-#
-#   Parameters      : vehicle:  vehicle instance to send the command to
-#                     vx:       Velocity in the X axis 
-#                     vy
-#                     vz
-#
-#   Return Value    : None
-#
-#   Author           : tiziano fiorenzani
-#
-#****************************************************************************
 
+#Here we set how the drone will move in order to the x, y, and z axis 
 def set_velocity_body(vehicle, vx, vy, vz):
     msg = vehicle.message_factory.set_position_target_local_ned_encode(
             0,
@@ -61,18 +19,7 @@ def set_velocity_body(vehicle, vx, vy, vz):
     vehicle.send_mavlink(msg)
     vehicle.flush()
 
-#****************************************************************************
-#   Method Name     : arm_and_takeoff
-#
-#   Description     : Add your takeoff function from your last assignment here
-#
-#   Parameters      : targetAltitude
-#
-#   Return Value    : None
-#
-#   Author           : You
-#
-#****************************************************************************
+#This is the same code we use in the past activity, and is for turn on the drone and take it off to a high of 10 meters 
 def arm_and_takeoff(TargetAltitude):
 	print('Executing takeoff')
 
@@ -101,48 +48,33 @@ def arm_and_takeoff(TargetAltitude):
 			break
 
 
-
-#### your code here #####
-
-#****************************************************************************
-#   Method Name     : key
-#
-#   Description     : Callback for TkInter Key events
-#
-#   Parameters      : Event: tkinter event containing the key that was pressed
-#
-#   Return Value    : None
-#
-#   Author           : You
-#
-#****************************************************************************
+#Here we set the arrows we are going to use in order to be able to move the drone on the air 
 def key(event):
     if event.char == event.keysym: #-- standard keys
         if event.keysym == 'r': drone.mode = VehicleMode("RTL")
-            ### Add your code for what you want to happen when you press r #####
+        print("On my way back to home")
+            #Here we set a button to make the drone return to home
             
     else: #-- non standard keys
         if event.keysym == 'Up': set_velocity_body(drone, 5, 0, 0)
-            ### add your code for what should happen when pressing the up arrow ###
+            #Here we set the up button to move the drone forward
         elif event.keysym == 'Down': set_velocity_body(drone, -5, 0, 0)
-            ### add your code for what should happen when pressing the down arrow ###
-        elif event.keysym == 'Left': set_velocity_body(drone, 0, 5, 0)
-            ### add your code for what should happen when pressing the Left arrow ###
-        elif event.keysym == 'Right': set_velocity_body(drone, 0, -5, 0)
-            ### add your code for what should happen when pressing the Right arrow ###
+            #Here we set the down button to move the drone backwards
+        elif event.keysym == 'Left': set_velocity_body(drone, 0, -5, 0)
+            #Here we set a key in order to make the drone move to the left 
+        elif event.keysym == 'Right': set_velocity_body(drone, 0, 5, 0)
+            #Here we set a key in order to move the drone to the right 
+      
 
-#****************************************************************************
-#   MAIN CODE
-#
-#****************************************************************************
-
-### add your code to connect to the drone here ###
+#Here twe connect the drone with the APM planner
 drone = connect('127.0.0.1:14551', wait_ready=True)
-# Take off to 10 m altitude
+# Here the drone take off to 10 m altitude
 arm_and_takeoff(10)
  
-# Read the keyboard with tkinter
+# Here the TKinter is opened and also we print the instructions of how to move the drone 
 root = tk.Tk()
 print(">> Control the drone with the arrow keys. Press r for RTL mode")
 root.bind_all('<Key>', key)
 root.mainloop()
+
+drone.close()
